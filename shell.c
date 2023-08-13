@@ -19,7 +19,8 @@
  * Return: EXIT_SUCCESS upon successful completion
  */
 
-int main(int ac, char **av, char **env) {
+int main(int ac, char **av, char **env)
+{
 	(void)ac;
 	(void)av;
 
@@ -30,17 +31,17 @@ int main(int ac, char **av, char **env) {
 	int num_chars = 0, status = 0, i = 0;
 	pid_t my_pid;
 
-	bool is_stream = isatty(STDIN_FILENO); // 1 if terminal , 0 if stream
+	bool is_stream = isatty(STDIN_FILENO); /* 1 if terminal , 0 if stream */
 
-	if (is_stream == 0) { // from stream
-		// Read input from a stream
+	if (is_stream == 0)
+	{ /* from stream */
+		/* Read input from a stream */
 		do {
 			int num_chars = getline(&line, &size_line, stdin);
-			if (num_chars == -1) {
+			if (num_chars == -1)
 				break;
-			}
 
-			// Remove newline character from the end of the line
+			/* Remove newline character from the end of the line */
 			if (line[num_chars - 1] == '\n')
 				line[num_chars - 1] = '\0';
 
@@ -50,8 +51,9 @@ int main(int ac, char **av, char **env) {
 
 			clean_line = strtok(line, delims);
 
-			/*this part is for splitiing the whole command */
-			while (clean_line != NULL) {
+			/* this part is for splitiing the whole command */
+			while (clean_line != NULL)
+			{
 				words[i] = clean_line;
 				i++;
 				clean_line = strtok(NULL, delims);
@@ -61,35 +63,42 @@ int main(int ac, char **av, char **env) {
 
 			/*--- */
 
-			// Execute the command
+			/* Execute the command */
 			pid_t my_pid = fork();
-			if (my_pid == -1) {
+			if (my_pid == -1)
+			{
 				perror("fork error");
 				exit(EXIT_FAILURE);
 			}
 
-			if (my_pid == 0) {
-				if (words[0] != NULL) {
-					if (execve(words[0], words, env) == -1) {
+			if (my_pid == 0)
+			{
+				if (words[0] != NULL)
+				{
+					if (execve(words[0], words, env) == -1)
+					{
 						perror("execve error");
 						exit(EXIT_FAILURE);
 					}
-				} else {
+				} else
 					break;
-				}
-			} else {
+			} else
+			{
 				int status;
 				wait(&status);
 			}
 		} while (num_chars != -1);
-	} else { // from terminal
-		// Read multiple commands from a stream (piped input)
-		while (true) {
+	} else
+	{ /* from terminal */
+		/* Read multiple commands from a stream (piped input) */
+		while (true)
+		{
 			printf("$ ");
 
 			num_chars = getline(&line, &size_line, stdin);
 
-			if (num_chars == -1) {
+			if (num_chars == -1)
+			{
 				perror("getline error");
 				break;
 			}
@@ -98,13 +107,16 @@ int main(int ac, char **av, char **env) {
 				line[num_chars - 1] = '\0';
 
 			my_pid = fork();
-			if (my_pid == -1) {
+			if (my_pid == -1)
+			{
 				perror("fork error");
 				exit(EXIT_FAILURE);
 			}
 
-			if (my_pid == 0) {
-				if (execve(line, argv, env) == -1) {
+			if (my_pid == 0)
+			{
+				if (execve(line, argv, env) == -1)
+				{
 					perror("execve error");
 					exit(EXIT_FAILURE);
 				}
