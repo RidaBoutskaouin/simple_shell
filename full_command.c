@@ -1,4 +1,4 @@
-#include "main.h"
+#include "shell.h"
 
 
 char *full_command(char *user_cmd) {

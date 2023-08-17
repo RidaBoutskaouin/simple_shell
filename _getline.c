@@ -1,4 +1,4 @@
-#include "main.h"
+#include "shell.h"
 
 ssize_t _getline(char **line, size_t *lenth, FILE *stream)
 {

@@ -1,4 +1,4 @@
-#include "main.h"
+#include "shell.h"
 
 
 char *get_env(const char *name) {
