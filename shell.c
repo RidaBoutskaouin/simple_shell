@@ -21,12 +21,14 @@ int main(int ac, char **av, char **env) {
 	char *abs_cmd = NULL;
 
 	size_t size_line = 0;
-	int num_chars = 0, status = 0, i = 0, cnt = 0;
+	int num_chars = 0, status = 0, i = 0, cnt;
 	pid_t my_pid;
 
 	bool is_stream = isatty(STDIN_FILENO); /* 1 if terminal, 0 if stream */
 
 	if (is_stream == 0) {
+		cnt = 0;
+		
 		/* from stream 
 		   Read input from a stream */
 		do {
@@ -70,6 +72,14 @@ int main(int ac, char **av, char **env) {
 			words[i] = NULL;
 			/*--- */
 
+			/*
+			if (strcmp(words[0], "exit") == 0 && i == 2 && atoi(words[1]) >= 0)
+				exit(atoi(words[1]));
+			else if (strcmp(words[0], "exit") == 0 && i > 2 && atoi(words[1]) <= 0)
+				exit(158);
+			else if (strcmp(words[0], "exit") == 0 && i == 2 && atoi(words[1]) == 0)
+				exit(2);
+			*/
 			/* fork */
 			pid_t my_pid = fork();
 			if (my_pid == -1) {
@@ -85,18 +95,11 @@ int main(int ac, char **av, char **env) {
 						if (command != NULL) {
 							if (execve(command, words, env) == -1)
 								exit(2);
-							cnt = cnt + 1;
+							else
+								cnt = cnt + 1;
 						} else {
-							// printf("%s: line %i: %s: ", av[0], cnt, line); sh: line 1: envsa: command not found
-
-							write(STDERR_FILENO, av[0], strlen(av[0]));
-							write(STDERR_FILENO, ": line ", 7);
-							char count_str = cnt + '0';
-							write(STDERR_FILENO, &count_str, 1);
-							write(STDERR_FILENO, ": ", 2);
-							write(STDERR_FILENO, line, strlen(line));
-							write(STDERR_FILENO, ": ", 2);
-							perror("");
+							// print  sh: line 1: envsa: command not found
+							print_error(av, cnt, line);
 							exit(127);
 						}
 					} else {
@@ -104,20 +107,12 @@ int main(int ac, char **av, char **env) {
 						if (command != NULL) {
 							if (execve(command, words, env) == -1)
 								exit(2);
-							// exit_status = 0;
-							cnt++;
+							else
+								cnt = cnt + 1;
 						} else {
-							// printf("%s: line %i: %s: ", av[0], cnt, line);
-							write(STDERR_FILENO, av[0], strlen(av[0]));
-							write(STDERR_FILENO, ": line ", 7);
-							char count_str = cnt + '0';
-							write(STDERR_FILENO, &count_str, 1);
-							write(STDERR_FILENO, ": ", 2);
-							write(STDERR_FILENO, line, strlen(line));
-							write(STDERR_FILENO, ": ", 2);
-							perror("");
+							// print  sh: line 1: envsa: command not found
+							print_error(av, cnt, line);
 							exit(127);
-
 						}
 					}
 				} else {
@@ -151,7 +146,6 @@ int main(int ac, char **av, char **env) {
 
 			if (strcmp(line, "env\n") == 0) {
 				print_env_vars();
-				exit(0);
 			}
 
 			if (line[0] == '.' && line[1] == '/') {
@@ -178,8 +172,13 @@ int main(int ac, char **av, char **env) {
 				i++;
 				clean_line = strtok(NULL, delims);
 			}
-
 			words[i] = NULL;
+
+			if (strcmp(words[0], "exit") == 0 && i == 2 && atoi(words[1]) >= 0)
+				exit(atoi(words[1]));
+			else if (strcmp(words[0], "exit") == 0 && i > 2)
+				perror("too many arguments");
+			
 
 			/*--- */
 			my_pid = fork();
