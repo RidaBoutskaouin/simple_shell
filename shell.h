@@ -22,5 +22,7 @@ ssize_t _getline(char **line, size_t *lenth, FILE *stream);
 char *get_current_working_directory();
 void print_env_vars();
 void print_error(char **av, int cnt, char *line);
+char *_strchr(char *str, char c);
+char *_strtok(char *str, char *seps);
 
 #endif
