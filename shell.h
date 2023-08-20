@@ -28,5 +28,6 @@ void print_error_exit(char **av, int cnt, char **words);
 int isValidNumber(const char *str);
 void handle_exit(int i, char **words, char **av, int cnt);
 char *edge_cases(int num_chars, int status, char *line, char *abs_cmd);
-
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+	
 #endif
