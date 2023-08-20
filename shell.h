@@ -24,5 +24,9 @@ void print_env_vars();
 void print_error(char **av, int cnt, char *line);
 char *_strchr(char *str, char c);
 char *_strtok(char *str, char *seps);
+void print_error_exit(char **av, int cnt, char **words);
+int isValidNumber(const char *str);
+void handle_exit(int i, char **words, char **av, int cnt);
+char *edge_cases(int num_chars, int status, char *line, char *abs_cmd);
 
 #endif
