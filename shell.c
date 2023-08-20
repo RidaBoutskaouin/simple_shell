@@ -1,6 +1,5 @@
 #include "shell.h"
 
-
 /**
  * main - Entry point for the program
  * @ac: Number of arguments
@@ -10,215 +9,194 @@
  * Return: EXIT_SUCCESS upon successful completion
  */
 
-
-int main(int ac, char **av, char **env) {
+int main(int ac, char **av, char **env)
+{
 	(void)ac;
-	(void)av;
 
-	char *line = NULL, *clean_line, delims[] = " \t\n", **words = NULL,
-	*command = NULL;
-
-	char *abs_cmd = NULL;
+	static char *line = NULL, *clean_line, delims[] = " \t\n", **words = NULL,
+		 *command = NULL, *abs_cmd = NULL;
 
 	size_t size_line = 0;
-	int num_chars = 0, status = 0, i = 0, cnt;
+	int num_chars = 0, status, i = 0, cnt = 0;
 	pid_t my_pid;
 
-	bool is_stream = isatty(STDIN_FILENO); /* 1 if terminal, 0 if stream */
+	bool is_stream = isatty(STDIN_FILENO);
 
-	if (is_stream == 0) {
-		cnt = 0;
-		
-		/* from stream 
-		   Read input from a stream */
-		do {
+	if (is_stream == 0)
+	{
+		do
+		{
+			cnt += 1;
 			num_chars = getline(&line, &size_line, stdin);
-			if (num_chars == -1) {
-				break;
-			}
 
-			if (strcmp(line, "env\n") == 0) {
-				print_env_vars();
-				exit(0);
-			}
-
-			if (strcmp(line, "exit\n") == 0)
-				exit(status >> 8);
-
-			if ((line[0] == '.' && line[1] == '/') || (line[0] == '.' && line[1] == '.')) {
-				abs_cmd = malloc(strlen(get_current_working_directory()) + strlen(line) + 1);
-				strcpy(abs_cmd, get_current_working_directory());
-				strcat(abs_cmd, "/");
-				strcat(abs_cmd, line);
-				free(line);
-				line = abs_cmd;
-			}
-
-			/* Remove newline character from the end of the line */
-			if (line[num_chars - 1] == '\n')
-				line[num_chars - 1] = '\0';
+			line = edge_cases(num_chars, status, line, abs_cmd);
 
 			words = malloc(sizeof(char *) * 1024);
 			if (words == NULL)
 				perror("malloc error");
 
-			/*this part is for splitiing the whole command */
-			clean_line = strtok(line, delims);
-			while (clean_line != NULL) {
+			clean_line = _strtok(line, delims);
+			while (clean_line != NULL)
+			{
 				words[i] = clean_line;
 				i++;
-				clean_line = strtok(NULL, delims);
+				clean_line = _strtok(NULL, delims);
 			}
 			words[i] = NULL;
-			/*--- */
 
-			/*
-			if (strcmp(words[0], "exit") == 0 && i == 2 && atoi(words[1]) >= 0)
-				exit(atoi(words[1]));
-			else if (strcmp(words[0], "exit") == 0 && i > 2 && atoi(words[1]) <= 0)
-				exit(158);
-			else if (strcmp(words[0], "exit") == 0 && i == 2 && atoi(words[1]) == 0)
-				exit(2);
-			*/
+			handle_exit(i, words, av, cnt);
+
 			/* fork */
 			pid_t my_pid = fork();
-			if (my_pid == -1) {
+			if (my_pid == -1)
+			{
 				perror("fork error");
 				exit(EXIT_FAILURE);
 			}
 
-			if (my_pid == 0) {
-				if (words[0] != NULL) {
+			if (my_pid == 0)
+			{
+				if (words[0] != NULL)
+				{
 					bool isabs = is_absolute_path(words[0]);
-					if (isabs == false) {
+					if (isabs == false)
+					{
 						command = full_command(words[0]);
-						if (command != NULL) {
+						if (command != NULL)
+						{
 							if (execve(command, words, env) == -1)
 								exit(2);
-							else
-								cnt = cnt + 1;
-						} else {
-							// print  sh: line 1: envsa: command not found
-							print_error(av, cnt, line);
-							exit(127);
 						}
-					} else {
-						command = words[0];
-						if (command != NULL) {
-							if (execve(command, words, env) == -1)
-								exit(2);
-							else
-								cnt = cnt + 1;
-						} else {
+						else
+						{
 							// print  sh: line 1: envsa: command not found
-							print_error(av, cnt, line);
+							print_error(av, cnt, line, isabs);
 							exit(127);
 						}
 					}
-				} else {
+					else
+					{
+						command = words[0];
+						if (command != NULL)
+						{
+							if (execve(command, words, env) == -1)
+							{
+								if (errno == ENOENT)
+									print_error(av, cnt, line, isabs);
+							}
+							exit(2);
+						}
+						else
+						{
+							// print  sh: line 1: envsa: command not found
+							print_error(av, cnt, line, isabs);
+							exit(127);
+						}
+					}
+				}
+				else
+				{
 					break;
 				}
-			} else {
+			}
+			else
+			{
 				wait(&status);
 				free(words);
 				free(command);
 				i = 0;
 			}
 		} while (num_chars != -1);
-	} else {
-		// from terminal
-		// Read multiple commands from a stream (piped input)
-		while (true) {
+	}
+	else
+	{
+		while (true)
+		{
 			write(1, "$ ", 2);
 
 			num_chars = getline(&line, &size_line, stdin);
 
-			if (num_chars == -1) {
-				perror("getline error");
-				break;
-			}
-
-			if (strcmp(line, "exit\n") == 0)
-			{
-				free(line);
-				exit(0);
-			}
-
-			if (strcmp(line, "env\n") == 0) {
-				print_env_vars();
-			}
-
-			if (line[0] == '.' && line[1] == '/') {
-				abs_cmd = malloc(strlen(get_current_working_directory()) + strlen(line) + 1);
-				strcpy(abs_cmd, get_current_working_directory());
-				strcat(abs_cmd, "/");
-				strcat(abs_cmd, line);
-				free(line);
-				line = abs_cmd;
-			}
-
-			if (line[num_chars - 1] == '\n')
-				line[num_chars - 1] = '\0';
+			line = edge_cases(num_chars, status, line, abs_cmd);
 
 			words = malloc(sizeof(char *) * 1024);
 			if (words == NULL)
 				perror("malloc error");
 
-			clean_line = strtok(line, delims);
-
-			/*this part is for splitiing the whole command */
-			while (clean_line != NULL) {
+			clean_line = _strtok(line, delims);
+			while (clean_line != NULL)
+			{
 				words[i] = clean_line;
 				i++;
-				clean_line = strtok(NULL, delims);
+				clean_line = _strtok(NULL, delims);
 			}
 			words[i] = NULL;
 
-			if (strcmp(words[0], "exit") == 0 && i == 2 && atoi(words[1]) >= 0)
-				exit(atoi(words[1]));
-			else if (strcmp(words[0], "exit") == 0 && i > 2)
-				perror("too many arguments");
-			
+			handle_exit(i, words, av, cnt);
 
 			/*--- */
 			my_pid = fork();
-			if (my_pid == -1) {
+			if (my_pid == -1)
+			{
 				perror("fork error");
 				exit(EXIT_FAILURE);
 			}
 
-			if (my_pid == 0) {
-				if (words[0] != NULL) {
+			if (my_pid == 0)
+			{
+				if (words[0] != NULL)
+				{
 					bool isabs = is_absolute_path(words[0]);
-					if (isabs == false) {
+					if (isabs == false)
+					{
 						command = full_command(words[0]);
-						if (command != NULL) {
-							execve(command, words, env);
-							exit(EXIT_SUCCESS);
-						} else {
-							perror("Command Not Found!");
-							exit(EXIT_FAILURE);
+						if (command != NULL)
+						{
+							if (execve(command, words, env) == -1)
+								exit(2);
 						}
-					} else {
-						command = words[0];
-						if (command != NULL) {
-							execve(command, words, env);
-							exit(EXIT_SUCCESS);
-						} else {
-							perror("Command Not Found!");
-							exit(EXIT_FAILURE);
-							break;
+						else
+						{
+							write(STDERR_FILENO, av[0], strlen(av[0]));
+							write(STDERR_FILENO, ": ", 2);
+							write(STDERR_FILENO, line, strlen(line));
+							write(STDERR_FILENO, ": command not found\n", 20);
+							exit(127);
 						}
 					}
-				} else {
+					else
+					{
+						command = words[0];
+						if (command != NULL)
+						{
+							if (execve(command, words, env) == -1)
+							{
+								if (errno == ENOENT)
+								{
+									write(STDERR_FILENO, av[0], strlen(av[0]));
+									write(STDERR_FILENO, ": ", 2);
+									write(STDERR_FILENO, line, strlen(line));
+									write(STDERR_FILENO, ": No such file or directory\n", 28);
+									exit(127);
+								}
+							}
+						}
+						else
+						{
+							print_error(av, cnt, line, isabs);
+							exit(127);
+						}
+					}
+				}
+				else
+				{
 					break;
 				}
-			} else {
+			}
+			else
+			{
 				wait(&status);
 				free(words);
-				// free(command);
 				free(line);
-				// free(abs_cmd);
 				i = 0;
 			}
 
@@ -226,9 +204,7 @@ int main(int ac, char **av, char **env) {
 			words = NULL;
 			abs_cmd = NULL;
 		}
-
 		free(line);
 	}
-
-	return (EXIT_SUCCESS);
+	return (0);
 }
