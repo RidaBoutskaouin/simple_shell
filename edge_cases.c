@@ -14,7 +14,10 @@ char *edge_cases(int num_chars, int status, char *line, char *abs_cmd)
     }
 
     if (strcmp(line, "exit\n") == 0)
+    {
+        free(line);
         exit(status >> 8);
+    }
 
     if ((line[0] == '.' && line[1] == '/') || (line[0] == '.' && line[1] == '.'))
     {

@@ -125,6 +125,7 @@ int main(int ac, char **av, char **env)
 			words = fill_array(clean_line, line, delims, words, i);
 
 			handle_exit(i, words, av, cnt);
+			
 			my_pid = fork();
 			if (my_pid == -1)
 			{
