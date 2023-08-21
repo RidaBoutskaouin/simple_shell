@@ -13,7 +13,7 @@ int main(int ac, char **av, char **env)
 {
 	(void)ac;
 
-	static char *line = NULL, *clean_line, delims[] = " \t\n", **words = NULL,
+	static char *line = NULL, *clean_line, delims[] = " \t\n;", **words = NULL,
 		 *command = NULL, *abs_cmd = NULL;
 
 	size_t size_line = 0;
@@ -125,7 +125,7 @@ int main(int ac, char **av, char **env)
 			words = fill_array(clean_line, line, delims, words, i);
 
 			handle_exit(i, words, av, cnt);
-			
+
 			my_pid = fork();
 			if (my_pid == -1)
 			{

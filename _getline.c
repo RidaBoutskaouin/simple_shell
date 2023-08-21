@@ -22,7 +22,8 @@ ssize_t _getline(char **line, size_t *lenth, FILE *stream)
 				return (-1);
 		}
 		buffer[chars_read++] = c;
-		if (c == '\n')
+		
+		if ((c == '\n') || (c == ';'))
 			break;
 	}
 
