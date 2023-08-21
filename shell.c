@@ -27,7 +27,7 @@ int main(int ac, char **av, char **env)
 		do
 		{
 			cnt += 1;
-			num_chars = getline(&line, &size_line, stdin);
+			num_chars = _getline(&line, &size_line, stdin);
 
 			line = edge_cases(num_chars, status, line, abs_cmd);
 
@@ -35,12 +35,12 @@ int main(int ac, char **av, char **env)
 			if (words == NULL)
 				perror("malloc error");
 
-			clean_line = _strtok(line, delims);
+			clean_line = strtok(line, delims);
 			while (clean_line != NULL)
 			{
 				words[i] = clean_line;
 				i++;
-				clean_line = _strtok(NULL, delims);
+				clean_line = strtok(NULL, delims);
 			}
 			words[i] = NULL;
 
@@ -114,7 +114,7 @@ int main(int ac, char **av, char **env)
 		{
 			write(1, "$ ", 2);
 
-			num_chars = getline(&line, &size_line, stdin);
+			num_chars = _getline(&line, &size_line, stdin);
 
 			line = edge_cases(num_chars, status, line, abs_cmd);
 
@@ -122,18 +122,9 @@ int main(int ac, char **av, char **env)
 			if (words == NULL)
 				perror("malloc error");
 
-			clean_line = _strtok(line, delims);
-			while (clean_line != NULL)
-			{
-				words[i] = clean_line;
-				i++;
-				clean_line = _strtok(NULL, delims);
-			}
-			words[i] = NULL;
+			words = fill_array(clean_line, line, delims, words, i);
 
 			handle_exit(i, words, av, cnt);
-
-			/*--- */
 			my_pid = fork();
 			if (my_pid == -1)
 			{
@@ -142,56 +133,7 @@ int main(int ac, char **av, char **env)
 			}
 
 			if (my_pid == 0)
-			{
-				if (words[0] != NULL)
-				{
-					bool isabs = is_absolute_path(words[0]);
-					if (isabs == false)
-					{
-						command = full_command(words[0]);
-						if (command != NULL)
-						{
-							if (execve(command, words, env) == -1)
-								exit(2);
-						}
-						else
-						{
-							write(STDERR_FILENO, av[0], strlen(av[0]));
-							write(STDERR_FILENO, ": ", 2);
-							write(STDERR_FILENO, line, strlen(line));
-							write(STDERR_FILENO, ": command not found\n", 20);
-							exit(127);
-						}
-					}
-					else
-					{
-						command = words[0];
-						if (command != NULL)
-						{
-							if (execve(command, words, env) == -1)
-							{
-								if (errno == ENOENT)
-								{
-									write(STDERR_FILENO, av[0], strlen(av[0]));
-									write(STDERR_FILENO, ": ", 2);
-									write(STDERR_FILENO, line, strlen(line));
-									write(STDERR_FILENO, ": No such file or directory\n", 28);
-									exit(127);
-								}
-							}
-						}
-						else
-						{
-							print_error(av, cnt, line, isabs);
-							exit(127);
-						}
-					}
-				}
-				else
-				{
-					break;
-				}
-			}
+				child_process_terminal(words, command, env, cnt, av, line);
 			else
 			{
 				wait(&status);
