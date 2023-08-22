@@ -1,4 +1,4 @@
-#ifndef SHELL_H
+i#ifndef SHELL_H
 #define SHELL_H
 
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <stdbool.h>
 
+
 bool is_absolute_path(const char *path);
 void print_error(char **av, int cnt, char *line, bool isabs);
 char *get_env(const char *name);
@@ -27,7 +28,7 @@ char *_strchr(char *str, char c);
 char *_strtok(char *str, char *seps);
 void print_error_exit(char **av, int cnt, char **words);
 int isValidNumber(const char *str);
-void handle_exit(int i, char **words, char **av, int cnt);
+void handle_exit(int i, char **words, char **av, int cnt, char *line);
 char *edge_cases(int num_chars, int status, char *line, char *abs_cmd);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 // void child_process_stream(char **words, char *command, char **env, char **av, int cnt, char *line);
