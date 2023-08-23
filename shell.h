@@ -28,7 +28,7 @@ char *_strchr(char *str, char c);
 char *_strtok(char *str, char *seps);
 void print_error_exit(char **av, int cnt, char **words);
 int isValidNumber(const char *str);
-void handle_exit(int i, char **words, char **av, char *line);
+void handle_exit(int i, char **words, char **av, int cnt, char *line);
 char *edge_cases(int num_chars, int status, char *line, char *abs_cmd);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 void child_process_terminal(char **words, char *command, char **env, int cnt, char **av, char *line);

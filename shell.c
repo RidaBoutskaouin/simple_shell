@@ -59,7 +59,7 @@ int main(int ac, char **av, char **env)
 			}
 			words[i] = NULL;
 
-			handle_exit(i, words, av, line);
+			handle_exit(i, words, av, cnt, line);
 
 			/* fork */
 			my_pid = fork();
@@ -169,7 +169,7 @@ int main(int ac, char **av, char **env)
 				clean_line = strtok(NULL, delims);
 			}
 			words[i] = NULL;
-			handle_exit(i, words, av, line);
+			handle_exit(i, words, av, cnt, line);
 
 			my_pid = fork();
 			if (my_pid == -1)
