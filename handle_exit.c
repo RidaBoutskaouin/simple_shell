@@ -12,7 +12,7 @@ void handle_exit(int i, char **words, char **av, int cnt, char *line)
 {
 	int exit_status = 0;
 
-	if (i == 2 && strcmp(words[0], "exit") == 0) // exit -98
+	if (i == 2 && strcmp(words[0], "exit") == 0)
 	{
 		if (isValidNumber(words[1]) == 1)
 		{
@@ -35,7 +35,7 @@ void handle_exit(int i, char **words, char **av, int cnt, char *line)
 			}
 			else
 			{
-				print_error_exit(av, cnt, words); // exit tr5
+				print_error_exit(av, cnt, words);
 				free(line);
 				line = NULL;
 				free(words);
