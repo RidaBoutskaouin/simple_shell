@@ -20,7 +20,7 @@ int main(int ac, char **av, char **env)
 	pid_t my_pid;
 	size_t size_line = 0;
 
-	bool is_stream = isatty(STDIN_FILENO);
+	bool is_stream = isatty(STDIN_FILENO), bool isabs;
 
 	if (is_stream == 0)
 	{
@@ -73,7 +73,7 @@ int main(int ac, char **av, char **env)
 			{
 				if (words[0] != NULL)
 				{
-					bool isabs = is_absolute_path(words[0]);
+					isabs = is_absolute_path(words[0]);
 					if (isabs == false)
 					{
 						command = full_command(words[0]);
