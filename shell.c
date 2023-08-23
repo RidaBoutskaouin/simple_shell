@@ -17,7 +17,7 @@ int main(int ac, char **av, char **env)
 		 *command = NULL, *abs_cmd = NULL;
 
 	size_t size_line = 0;
-	int num_chars = 0, status, i = 0, cnt = 0;
+	int num_chars = 0, status = 0, i = 0, cnt = 0, empty_input = 1;
 	pid_t my_pid;
 
 	bool is_stream = isatty(STDIN_FILENO);
@@ -28,6 +28,21 @@ int main(int ac, char **av, char **env)
 		{
 			cnt += 1;
 			num_chars = _getline(&line, &size_line, stdin);
+
+			empty_input = 1;
+			for (int i = 0; i < num_chars - 1; i++) {
+				if (line[i] != ' ') {
+					empty_input = 0;
+					break;
+				}
+			}
+
+			if (empty_input == 1)
+			{
+				free(line);
+				line = NULL;
+				continue;
+			}
 
 			line = edge_cases(num_chars, status, line, abs_cmd);
 
@@ -44,7 +59,7 @@ int main(int ac, char **av, char **env)
 			}
 			words[i] = NULL;
 
-			handle_exit(i, words, av, cnt);
+			handle_exit(i, words, av, cnt, line);
 
 			/* fork */
 			pid_t my_pid = fork();
@@ -81,8 +96,10 @@ int main(int ac, char **av, char **env)
 						{
 							if (execve(command, words, env) == -1)
 							{
-								if (errno == ENOENT)
+								if (errno == ENOENT) {
 									print_error(av, cnt, line, isabs);
+									exit(2);
+								}
 							}
 							exit(2);
 						}
@@ -96,16 +113,22 @@ int main(int ac, char **av, char **env)
 				}
 				else
 				{
-					break;
+					exit(0);
 				}
 			}
 			else
 			{
 				wait(&status);
 				free(words);
+				if (empty_input != 1)
+					free(line);
 				free(command);
 				i = 0;
 			}
+			line = NULL;
+			words = NULL;
+			abs_cmd = NULL;
+			// free(line);
 		} while (num_chars != -1);
 	}
 	else
@@ -116,6 +139,21 @@ int main(int ac, char **av, char **env)
 
 			num_chars = _getline(&line, &size_line, stdin);
 
+			
+			for (int i = 0; i < num_chars - 1; i++) {
+				if (line[i] != ' ') {
+					empty_input = 0;
+					break;
+				}
+			}
+
+			if (empty_input == 1)
+			{
+				free(line);
+				line = NULL;
+				continue;
+			}
+
 			line = edge_cases(num_chars, status, line, abs_cmd);
 
 			words = malloc(sizeof(char *) * 1024);
@@ -124,7 +162,7 @@ int main(int ac, char **av, char **env)
 
 			words = fill_array(clean_line, line, delims, words, i);
 
-			handle_exit(i, words, av, cnt);
+			handle_exit(i, words, av, cnt, line);
 
 			my_pid = fork();
 			if (my_pid == -1)
@@ -147,7 +185,8 @@ int main(int ac, char **av, char **env)
 			words = NULL;
 			abs_cmd = NULL;
 		}
-		free(line);
+		if (empty_input != 1)
+			free(line);
 	}
 	return (0);
 }
