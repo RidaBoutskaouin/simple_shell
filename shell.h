@@ -34,4 +34,4 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 void child_process_terminal(char **words, char *command, char **env, int cnt, char **av, char *line);
 char **fill_array(char *clean_line, char *line, char *delims, char **words, int i);
 
-#endif
+#endif /* SHELL_H */
