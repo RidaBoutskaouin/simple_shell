@@ -35,7 +35,7 @@ void handle_exit(int i, char **words, char **av, int cnt, char *line)
 			}
 			else
 			{
-				prinit_error_exit(av, cnt, words);
+				print_error_exit(av, cnt, words);
 				free(line);
 				line = NULL;
 				free(words);
