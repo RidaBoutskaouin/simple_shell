@@ -3,10 +3,11 @@
 ssize_t _getline(char **line, size_t *lenth, FILE *stream)
 {
 	(void)stream;
-	char *buffer = NULL;
+	char *buffer;
 	size_t buffer_size = 0, chars_read = 0;
 	char c;
 
+	buffer = NULL;
 	if (line == NULL || lenth == NULL)
 		return (-1);
 
