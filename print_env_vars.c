@@ -12,7 +12,7 @@ void print_env_vars()
 
     for (i = 0; environ[i] != NULL; i++)
     {
-        write(STDOUT_FILENO, environ[i], strlen(environ[i]));
-        write(STDOUT_FILENO, "\n", 1);
+        (void)write(STDOUT_FILENO, environ[i], strlen(environ[i]));
+        (void)write(STDOUT_FILENO, "\n", 1);
     }
 }
