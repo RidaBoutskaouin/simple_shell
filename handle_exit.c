@@ -8,7 +8,7 @@
  * Return: void
  */
 
-void handle_exit(int i, char **words, char **av, int cnt, char *line)
+void handle_exit(int i, char **words, char **av, char *line)
 {
 	int exit_status = 0;
 
@@ -25,17 +25,20 @@ void handle_exit(int i, char **words, char **av, int cnt, char *line)
 		}
 		else
 		{
-			if (atoi(words[1]) < 0 || atoi(words[1]) == -98)
+			if (atoi(words[1]) < 0)
 			{
+				fprintf(stderr, "%s: %d: exit: Illegal number: %s\n",
+                            av[0], 1, words[1]);
 				free(line);
 				line = NULL;
 				free(words);
 				words = NULL;
-				exit(158);
+				exit(2);
 			}
 			else
 			{
-				print_error_exit(av, cnt, words);
+				fprintf(stderr, "%s: %d: exit: Illegal number: %s\n",
+                            av[0], 1, words[1]);
 				free(line);
 				line = NULL;
 				free(words);
