@@ -126,7 +126,6 @@ int main(int ac, char **av, char **env)
 			line = NULL;
 			words = NULL;
 			abs_cmd = NULL;
-			// free(line);
 		} while (num_chars != -1);
 	}
 	else
