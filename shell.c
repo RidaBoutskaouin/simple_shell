@@ -85,7 +85,6 @@ int main(int ac, char **av, char **env)
 						}
 						else
 						{
-							// print  sh: line 1: envsa: command not found
 							print_error(av, cnt, line, isabs);
 							exit(127);
 						}
@@ -106,7 +105,6 @@ int main(int ac, char **av, char **env)
 						}
 						else
 						{
-							// print  sh: line 1: envsa: command not found
 							print_error(av, cnt, line, isabs);
 							exit(127);
 						}
