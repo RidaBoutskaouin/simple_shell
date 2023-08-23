@@ -23,7 +23,7 @@ void child_process_terminal(char **words, char *command, char **env,
                 bytes_written = write(STDERR_FILENO, ": ", 2);
                 bytes_written = write(STDERR_FILENO, line, strlen(line));
                 bytes_written = write(STDERR_FILENO, ": command not found\n", 20);
-                if ((bytes_written = -1))
+                if (bytes_written == -1)
                 {};
                 exit(127);
             }
@@ -41,7 +41,7 @@ void child_process_terminal(char **words, char *command, char **env,
                         bytes_written = write(STDERR_FILENO, ": ", 2);
                         bytes_written = write(STDERR_FILENO, line, strlen(line));
                         bytes_written = write(STDERR_FILENO, ": No such file or directory\n", 28);
-                        if (bytes_written = -1)
+                        if (bytes_written == -1)
                         {};
                         exit(127);
                     }
