@@ -5,7 +5,7 @@ void child_process_terminal(char **words, char *command, char **env,
 {
     if (words[0] != NULL)
     {
-        bool isabs = is_absolute_path(words[0]);
+        isabs = is_absolute_path(words[0]);
         if (isabs == false)
         {
             command = full_command(words[0]);
