@@ -20,7 +20,7 @@ int main(int ac, char **av, char **env)
 	pid_t my_pid;
 	size_t size_line = 0;
 
-	bool is_stream = isatty(STDIN_FILENO), bool isabs;
+	bool is_stream = isatty(STDIN_FILENO), isabs;
 
 	if (is_stream == 0)
 	{
