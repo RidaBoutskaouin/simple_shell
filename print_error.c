@@ -15,12 +15,13 @@ void print_error(char **av, int cnt, char *line, bool isabs)
     if (bytes_written == -1)
     {};
 
-    if (isabs == false)
+    if (isabs == false) {
         bytes_written = write(STDERR_FILENO, ": command not found\n", 20);
         if (bytes_written == -1)
         {};
-    else if (isabs == true)
+    } else if (isabs == true) {
         bytes_written = write(STDERR_FILENO, ": No such file or directory\n", 28);
         if (bytes_written == -1)
         {};
+    }
 }
