@@ -15,6 +15,8 @@ char *edge_cases(int num_chars, int status, char *line, char *abs_cmd)
     if (strcmp(line, "env") == 0 || strcmp(line, "printenv") == 0)
     {
         print_env_vars();
+	free(line);
+	line = NULL;
         exit(0);
     }
 
