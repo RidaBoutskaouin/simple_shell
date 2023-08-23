@@ -134,6 +134,9 @@ int main(int ac, char **av, char **env)
 		while (true)
 		{
 			bytes_written = write(1, "$ ", 2);
+			if (bytes_written == -1) {
+			    // Handle error
+			}
 
 			num_chars = _getline(&line, &size_line, stdin);
 
