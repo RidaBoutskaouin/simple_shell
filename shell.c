@@ -1,6 +1,6 @@
 #include "shell.h"
 #include <stdlib.h>
-
+#include <unistd.h>
 /**
  * main - Entry point for the program
  * @ac: Number of arguments
