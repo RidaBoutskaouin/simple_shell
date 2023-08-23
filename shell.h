@@ -31,7 +31,6 @@ int isValidNumber(const char *str);
 void handle_exit(int i, char **words, char **av, int cnt, char *line);
 char *edge_cases(int num_chars, int status, char *line, char *abs_cmd);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
-// void child_process_stream(char **words, char *command, char **env, char **av, int cnt, char *line);
 void child_process_terminal(char **words, char *command, char **env, int cnt, char **av, char *line);
 char **fill_array(char *clean_line, char *line, char *delims, char **words, int i);
 
