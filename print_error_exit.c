@@ -13,10 +13,10 @@ void print_error_exit(char **av, int cnt, char **words)
 {
 	char count_str = cnt + '0';
 
-	write(STDERR_FILENO, av[0], strlen(av[0]));
-	write(STDERR_FILENO, ": line ", 7);
-	write(STDERR_FILENO, &count_str, 1);
-	write(STDERR_FILENO, ": exit: ", 8);
-	write(STDERR_FILENO, words[1], strlen(words[1]));
-	write(STDERR_FILENO, ": numeric argument required\n", 28);
+	(void)write(STDERR_FILENO, av[0], strlen(av[0]));
+	(void)write(STDERR_FILENO, ": line ", 7);
+	(void)write(STDERR_FILENO, &count_str, 1);
+	(void)write(STDERR_FILENO, ": exit: ", 8);
+	(void)write(STDERR_FILENO, words[1], strlen(words[1]));
+	(void)write(STDERR_FILENO, ": numeric argument required\n", 28);
 }
