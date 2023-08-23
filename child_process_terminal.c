@@ -3,6 +3,8 @@
 void child_process_terminal(char **words, char *command, char **env,
                             int cnt, char **av, char *line)
 {
+    bool isabs_f;
+  
     if (words[0] != NULL)
     {
         isabs = is_absolute_path(words[0]);
