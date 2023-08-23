@@ -30,7 +30,7 @@ int main(int ac, char **av, char **env)
 			num_chars = _getline(&line, &size_line, stdin);
 
 			empty_input = 1;
-			for (int i = 0; i < num_chars - 1; i++) {
+			for (i = 0; i < num_chars - 1; i++) {
 				if (line[i] != ' ') {
 					empty_input = 0;
 					break;
