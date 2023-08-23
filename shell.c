@@ -159,8 +159,16 @@ int main(int ac, char **av, char **env)
 			if (words == NULL)
 				perror("malloc error");
 
-			words = fill_array(clean_line, line, delims, words, i);
-
+			/*words = fill_array(clean_line, line, delims, words, i);*/
+			
+			clean_line = strtok(line, delims);
+			while (clean_line != NULL)
+			{
+				words[i] = clean_line;
+				i++;
+				clean_line = strtok(NULL, delims);
+			}
+			words[i] = NULL;
 			handle_exit(i, words, av, cnt, line);
 
 			my_pid = fork();
