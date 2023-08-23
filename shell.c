@@ -139,8 +139,8 @@ int main(int ac, char **av, char **env)
 			num_chars = _getline(&line, &size_line, stdin);
 
 			
-			for (int i = 0; i < num_chars - 1; i++) {
-				if (line[i] != ' ') {
+			for (j = 0; j < num_chars - 1; j++) {
+				if (line[j] != ' ') {
 					empty_input = 0;
 					break;
 				}
