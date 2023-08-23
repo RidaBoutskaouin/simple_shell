@@ -11,12 +11,15 @@
 
 void print_error_exit(char **av, int cnt, char **words)
 {
+	ssize_t bytes_written;
 	char count_str = cnt + '0';
 
-	(void)write(STDERR_FILENO, av[0], strlen(av[0]));
-	(void)write(STDERR_FILENO, ": line ", 7);
-	(void)write(STDERR_FILENO, &count_str, 1);
-	(void)write(STDERR_FILENO, ": exit: ", 8);
-	(void)write(STDERR_FILENO, words[1], strlen(words[1]));
-	(void)write(STDERR_FILENO, ": numeric argument required\n", 28);
+	bytes_written = write(STDERR_FILENO, av[0], strlen(av[0]));
+	bytes_written = write(STDERR_FILENO, ": line ", 7);
+	bytes_written = write(STDERR_FILENO, &count_str, 1);
+	bytes_written = write(STDERR_FILENO, ": exit: ", 8);
+	bytes_written = write(STDERR_FILENO, words[1], strlen(words[1]));
+	bytes_written = write(STDERR_FILENO, ": numeric argument required\n", 28);
+	if (bytes_written = -1)
+	{};
 }
