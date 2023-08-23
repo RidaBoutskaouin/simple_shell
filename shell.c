@@ -14,11 +14,12 @@ int main(int ac, char **av, char **env)
 {
 	(void)ac;
 
-	static char *line = NULL, *clean_line, delims[] = " \t\n;", **words = NULL,
+	char *line = NULL, *clean_line, delims[] = " \t\n;", **words = NULL,
 		 *command = NULL, *abs_cmd = NULL;
 	int num_chars = 0, status = 0, i = 0, cnt = 0, empty_input = 1, j;
 	pid_t my_pid;
 	size_t size_line = 0;
+	ssize_t bytes_written;
 
 	bool is_stream = isatty(STDIN_FILENO), isabs;
 
