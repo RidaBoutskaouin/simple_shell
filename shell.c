@@ -18,7 +18,7 @@ int main(int ac, char **av, char **env)
 		 *command = NULL, *abs_cmd = NULL;
 
 	size_t size_line = 0;
-	int num_chars = 0, status = 0, i = 0, cnt = 0, empty_input = 1;
+	int num_chars = 0, status = 0, i = 0, cnt = 0, empty_input = 1, j;
 	pid_t my_pid;
 
 	bool is_stream = isatty(STDIN_FILENO);
@@ -31,8 +31,8 @@ int main(int ac, char **av, char **env)
 			num_chars = _getline(&line, &size_line, stdin);
 
 			empty_input = 1;
-			for (i = 0; i < num_chars - 1; i++) {
-				if (line[i] != ' ') {
+			for (j = 0; j < num_chars - 1; j++) {
+				if (line[j] != ' ') {
 					empty_input = 0;
 					break;
 				}
