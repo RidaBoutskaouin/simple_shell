@@ -15,7 +15,7 @@ void print_env_vars()
     {
         bytes_written = write(STDOUT_FILENO, environ[i], strlen(environ[i]));
         bytes_written = write(STDOUT_FILENO, "\n", 1);
-        if (bytes_written = -1)
+        if (bytes_written == -1)
         {};
     }
 }
