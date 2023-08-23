@@ -63,7 +63,7 @@ int main(int ac, char **av, char **env)
 			handle_exit(i, words, av, cnt, line);
 
 			/* fork */
-			pid_t my_pid = fork();
+			my_pid = fork();
 			if (my_pid == -1)
 			{
 				perror("fork error");
