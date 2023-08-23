@@ -25,7 +25,7 @@ void handle_exit(int i, char **words, char **av, int cnt, char *line)
 		}
 		else
 		{
-			if (atoi(words[1]) < 0 && atoi(words[1]) == -98)
+			if (atoi(words[1]) < 0 || atoi(words[1]) == -98)
 			{
 				free(line);
 				line = NULL;
@@ -35,7 +35,7 @@ void handle_exit(int i, char **words, char **av, int cnt, char *line)
 			}
 			else
 			{
-				print_error_exit(av, cnt, words);
+				prinit_error_exit(av, cnt, words);
 				free(line);
 				line = NULL;
 				free(words);
