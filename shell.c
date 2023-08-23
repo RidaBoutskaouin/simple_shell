@@ -133,7 +133,7 @@ int main(int ac, char **av, char **env)
 	{
 		while (true)
 		{
-			(void)write(1, "$ ", 2);
+			bytes_written = write(1, "$ ", 2);
 
 			num_chars = _getline(&line, &size_line, stdin);
 
